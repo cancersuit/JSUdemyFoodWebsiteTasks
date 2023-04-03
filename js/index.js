@@ -96,4 +96,49 @@ window.addEventListener('DOMContentLoaded', () => {
         }
 
         setClock('.timer', deadline);
+
+
+        //задание с модальными окнами (присутствуют небольшие модификации html)
+
+        const openModal = document.querySelectorAll('[data-modal]'),
+              modalWindow = document.querySelector('.modal'),
+              closeModal = document.querySelector('.modal__close')
+
+        openModal.forEach(el => {
+            el.addEventListener('click', openModalFunc)
+
+            closeModal.addEventListener('click', closeModalFunc)
+
+            modalWindow.addEventListener('click', (event) => {
+                if(event.target == modalWindow)
+                closeModalFunc();
+            })
+        });
+
+        function openModalFunc() {
+            modalWindow.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            clearInterval(modalTimerId);
+        }
+
+        function closeModalFunc() { //функция создана чтобы избежать участков повторения кода
+            modalWindow.style.display = 'none';
+            document.body.style.overflow = '';
+            window.removeEventListener('scroll', showModalByScroll);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Escape' && modalWindow.style.display === 'block')
+                closeModalFunc();
+        })  
+
+        const modalTimerId = setTimeout(openModalFunc, 3000);
+
+        function showModalByScroll() {
+            if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight)
+                openModalFunc();
+        }
+
+        window.addEventListener('scroll', showModalByScroll) //{once: true} - можно было бы использовать такой метод, если бы отслеживание велось не на окно. Этот метод позволяет выполнить addEventListener лишь единожды
+
 })
