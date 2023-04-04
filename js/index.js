@@ -132,7 +132,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 closeModalFunc();
         })  
 
-        const modalTimerId = setTimeout(openModalFunc, 3000);
+        // const modalTimerId = setTimeout(openModalFunc, 3000);
 
         function showModalByScroll() {
             if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight)
@@ -141,4 +141,58 @@ window.addEventListener('DOMContentLoaded', () => {
 
         window.addEventListener('scroll', showModalByScroll) //{once: true} - можно было бы использовать такой метод, если бы отслеживание велось не на окно. Этот метод позволяет выполнить addEventListener лишь единожды
 
+
+        //задание с генерацией меню посредством классов
+
+        const menu = document.querySelector('.menu__field'),
+              menuContainer = menu.querySelector('.container');
+
+        class Menu {
+            constructor(image, title, text, price) {
+                this.image = image;
+                this.title = title;
+                this.text = text;
+                this.price = price;
+            }
+        }
+
+        const menuObj = {
+            firstMenuBlock: new Menu('img/tabs/vegy.jpg', 'Меню "Фитнес"', 'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!', 229),
+            secondMenuBlock: new Menu('img/tabs/elite.jpg', 'Меню “Премиум”', 'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!', 550),
+            thirdMenuBlock: new Menu('img/tabs/post.jpg', 'Меню "Постное"', 'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.', 430)
+        }
+
+        menuContainer.innerHTML = '';
+
+        for (const key in menuObj) {
+            const el = menuObj[key];
+            menuContainer.innerHTML += `<div class="menu__item">
+            <img src=${el.image} alt="vegy">
+            <h3 class="menu__item-subtitle">${el.title}</h3>
+            <div class="menu__item-descr">${el.text}</div>
+            <div class="menu__item-divider"></div>
+            <div class="menu__item-price">
+                <div class="menu__item-cost">Цена:</div>
+                <div class="menu__item-total"><span>${el.price}</span> грн/день</div>
+            </div>
+        </div>`
+        console.log(el)
+        }
+
+    
 })
+
+
+// class Rectangle {
+// 	constructor(height, width){
+// 		this.height = height;
+// 		this.width = width;
+// 	}
+	
+// 	calcArea() {
+// 		return this.height * this.width;
+// 	}
+// }
+
+// const square = new Rectangle(10, 10);
+// console.log(square.height)
