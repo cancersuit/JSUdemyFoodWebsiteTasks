@@ -118,7 +118,7 @@ window.addEventListener('DOMContentLoaded', () => {
         function openModalFunc() {
             modalWindow.style.display = 'block';
             document.body.style.overflow = 'hidden';
-            clearInterval(modalTimerId);
+            //clearInterval(modalTimerId);
         }
 
         function closeModalFunc() { //функция создана чтобы избежать участков повторения кода
@@ -206,19 +206,57 @@ window.addEventListener('DOMContentLoaded', () => {
             '.menu .container'
         ).render();
     
+
+        //задание с отправкой данных на сервер
+
+        const forms = document.querySelectorAll('form');
+
+        const message = {
+            loading: 'Загрузка',
+            success: 'Спасибо! Скоро вы с Вами свяжемся.',
+            failure: 'Что-то пошло не так...'
+        };
+
+        forms.forEach(item => {
+            postData(item);
+        });
+
+        function postData(form){
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const statusMessage = document.createElement('div');
+                statusMessage.classList.add('status');
+                statusMessage.textContent = message.loading;
+                form.append(statusMessage);
+
+                const request = new XMLHttpRequest();
+                request.open('POST', 'server.php');
+
+                // request.setRequestHeader('Content-type', 'multipart/form-data'); // Заголовок устанавливается автоматически, вручную его устанавливать не нужно !!если отправляем как форму, а не json
+                request.setRequestHeader('Content-type', 'application/json');
+                const formData = new FormData(form); // Отправка данных, заполненных пользователем с формы. Формирует ключ: значение Очень важно чтобы у инпутов был аттрибут name
+
+                const object = {};
+                formData.forEach(function(value, key) {
+                    object[key] = value;
+                });
+
+                const json = JSON.stringify(object);
+
+                request.send(json); // в случае отправки данных в виде JSON необходима модификация файла php, так как нативно он не умеет работать с JSON
+                request.addEventListener('load', () => {
+                    if (request.status === 200){
+                        console.log(request.response);
+                        statusMessage.textContent = message.success;
+                        form.reset(); // очистка формы
+                        setTimeout(() => {
+                            statusMessage.remove();
+                        }, 2000);
+                    } else {
+                        statusMessage.textContent = message.failure;
+                    }
+                })
+            })
+        }
 })
-
-
-// class Rectangle {
-// 	constructor(height, width){
-// 		this.height = height;
-// 		this.width = width;
-// 	}
-	
-// 	calcArea() {
-// 		return this.height * this.width;
-// 	}
-// }
-
-// const square = new Rectangle(10, 10);
-// console.log(square.height)
